@@ -103,8 +103,8 @@ export class UserService {
         return null;
       }
 
-      // Return user without password
-      const { password, ...userWithoutPassword } = user;
+      // Return user without password field
+      const { password: _userPassword, ...userWithoutPassword } = user;
       return userWithoutPassword as User;
     } catch (error) {
       console.error('Error verifying password:', error);

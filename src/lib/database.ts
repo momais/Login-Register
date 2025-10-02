@@ -4,7 +4,7 @@ import { Pool, PoolClient } from 'pg';
 const isProduction = process.env.NODE_ENV === 'production';
 const connectionString = process.env.DATABASE_URL;
 
-let pool: Pool;
+let pool!: Pool; // Definite assignment assertion - will be initialized in initializePool
 let isPoolInitialized = false;
 
 // Initialize pool with optimized settings for Neon DB
@@ -100,7 +100,7 @@ export const query = async (text: string, params?: unknown[], retries = 2): Prom
       }
       
       return res;
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(`Query error (attempt ${attempt + 1}):`, error);
       
       // Release client if we have one
@@ -110,12 +110,15 @@ export const query = async (text: string, params?: unknown[], retries = 2): Prom
       }
       
       // Check if we should retry
+      const errorCode = (error as { code?: string })?.code;
+      const errorMessage = (error as { message?: string })?.message;
+      
       const shouldRetry = attempt < retries && (
-        error.code === 'ECONNRESET' ||
-        error.code === 'ENOTFOUND' ||
-        error.code === 'ETIMEDOUT' ||
-        error.message?.includes('Connection terminated') ||
-        error.message?.includes('connect ECONNREFUSED')
+        errorCode === 'ECONNRESET' ||
+        errorCode === 'ENOTFOUND' ||
+        errorCode === 'ETIMEDOUT' ||
+        errorMessage?.includes('Connection terminated') ||
+        errorMessage?.includes('connect ECONNREFUSED')
       );
       
       if (shouldRetry) {
@@ -137,6 +140,16 @@ export const query = async (text: string, params?: unknown[], retries = 2): Prom
 };
 
 // Get client from pool
-export const getClient = async () => pool.connect();
+export const getClient = async () => {
+  if (!isPoolInitialized) {
+    initializePool();
+  }
+  return pool.connect();
+};
+
+// Ensure pool is initialized before exporting
+if (!isPoolInitialized) {
+  initializePool();
+}
 
 export default pool;
