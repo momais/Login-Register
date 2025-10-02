@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AuthFlow - Secure Authentication",
+  title: "Login/Register",
   description: "A modern, secure authentication platform built with Next.js. Sign up, log in, and manage your account with confidence.",
   keywords: ["authentication", "login", "register", "security", "nextjs"],
   authors: [{ name: "AuthFlow Team" }],
