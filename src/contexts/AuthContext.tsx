@@ -38,10 +38,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setUser(null);
         }
       } else {
-        // Fallback: attempt to derive minimal info from token
+        // Fallback: attempt to derive minimal info from JWT token
         try {
-          const payload = JSON.parse(atob(savedToken));
-          setUser({ id: payload.userId, name: '', email: payload.email });
+          // For JWT tokens, we need to decode the payload
+          const parts = savedToken.split('.');
+          if (parts.length === 3) {
+            const payload = JSON.parse(atob(parts[1]));
+            setUser({ id: payload.userId.toString(), name: '', email: payload.email });
+          } else {
+            // Old base64 token format (for backward compatibility)
+            const payload = JSON.parse(atob(savedToken));
+            setUser({ id: payload.userId, name: '', email: payload.email });
+          }
         } catch {
           localStorage.removeItem('token');
           setToken(null);
@@ -72,7 +80,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         return false;
       }
-    } catch (_error) {
+    } catch (error) {
+      console.error('Login error:', error);
       return false;
     }
   };
@@ -98,7 +107,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       } else {
         return false;
       }
-    } catch (_error) {
+    } catch (error) {
+      console.error('Registration error:', error);
       return false;
     }
   };

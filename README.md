@@ -48,10 +48,25 @@ docker run --name authflow-postgres \
 
 ### 3. Environment Configuration
 
+#### For Neon DB (Recommended for Production)
+
 Create a `.env.local` file in the root directory:
 
 ```env
-# Database Configuration
+# Neon Database Configuration
+DATABASE_URL=postgresql://username:password@ep-example-123456.us-east-1.aws.neon.tech/neondb?sslmode=require
+
+# JWT Secret (generate a secure random string)
+JWT_SECRET=your_super_secure_jwt_secret_here
+
+# Environment
+NODE_ENV=development
+```
+
+#### For Local PostgreSQL Development
+
+```env
+# Local Database Configuration
 DATABASE_URL=postgresql://username:password@localhost:5432/authflow_db
 DB_HOST=localhost
 DB_PORT=5432
@@ -59,10 +74,27 @@ DB_NAME=authflow_db
 DB_USER=username
 DB_PASSWORD=password
 
-# Next.js Configuration
-NEXTAUTH_SECRET=your-secret-key-here-change-this-in-production
-NEXTAUTH_URL=http://localhost:3000
+# JWT Secret
+JWT_SECRET=your_super_secure_jwt_secret_here
+
+# Environment
+NODE_ENV=development
 ```
+
+#### Setting up Neon DB
+
+1. Sign up at [Neon](https://neon.tech)
+2. Create a new project
+3. Copy the connection string from your Neon dashboard
+4. Add it to your `.env.local` file as `DATABASE_URL`
+
+#### For Vercel Deployment
+
+In your Vercel dashboard, add these environment variables:
+
+- `DATABASE_URL`: Your Neon DB connection string
+- `JWT_SECRET`: A secure random string
+- `NODE_ENV`: `production`
 
 ### 4. Initialize Database
 
