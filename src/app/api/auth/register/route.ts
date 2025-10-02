@@ -1,6 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { UserService } from '@/services/userService';
 
+// Add CORS headers for Vercel deployment
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+};
+
+export async function OPTIONS() {
+  return new Response(null, { status: 200, headers: corsHeaders });
+}
+
 // Simple token generation for demo purposes
 function generateToken(userId: number, email: string): string {
   const payload = {
@@ -66,19 +77,19 @@ export async function POST(request: NextRequest) {
         name: newUser.name,
         email: newUser.email,
       },
-    });
+    }, { headers: corsHeaders });
   } catch (error: unknown) {
     // Handle specific database errors
     if (error instanceof Error && error.message === 'User with this email already exists') {
       return NextResponse.json(
         { message: 'User with this email already exists' },
-        { status: 400 }
+        { status: 400, headers: corsHeaders }
       );
     }
 
     return NextResponse.json(
       { message: 'Internal server error' },
-      { status: 500 }
+      { status: 500, headers: corsHeaders }
     );
   }
 }

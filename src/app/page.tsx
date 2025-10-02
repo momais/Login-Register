@@ -33,7 +33,6 @@ export default function Home() {
               {user ? (
                 <>
                   <div className="flex items-center space-x-3">
-                    
                     <span className="text-gray-700 font-medium">Welcome, {user.name}!</span>
                   </div>
                   <button

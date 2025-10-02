@@ -14,11 +14,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Login/Register",
+  title: "AuthFlow - Secure Authentication",
   description: "A modern, secure authentication platform built with Next.js. Sign up, log in, and manage your account with confidence.",
   keywords: ["authentication", "login", "register", "security", "nextjs"],
   authors: [{ name: "AuthFlow Team" }],
-  viewport: "width=device-width, initial-scale=1",
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({

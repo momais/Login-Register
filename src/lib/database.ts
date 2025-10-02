@@ -1,34 +1,37 @@
 import { Pool } from 'pg';
-import path from 'path';
-import dotenv from 'dotenv';
 
-// Load environment variables from .env.local explicitly
-dotenv.config({ path: path.join(process.cwd(), '.env.local') });
+// Note: Vercel automatically loads environment variables, no need for dotenv in production
 
-// Database configuration
-const dbConfig = {
-  connectionString: process.env.DATABASE_URL,
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '5432'),
-  database: process.env.DB_NAME || 'authflow_db',
-  user: process.env.DB_USER || 'username',
-  password: process.env.DB_PASSWORD || 'password',
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-} as const;
+// Database configuration optimized for Vercel
+const isProduction = process.env.NODE_ENV === 'production';
+const connectionString = process.env.DATABASE_URL;
 
-// Create connection pool
-const pool = new Pool(
-  dbConfig.connectionString
-    ? { connectionString: dbConfig.connectionString, ssl: dbConfig.ssl as boolean | undefined }
-    : {
-        host: dbConfig.host,
-        port: dbConfig.port,
-        database: dbConfig.database,
-        user: dbConfig.user,
-        password: dbConfig.password,
-        ssl: dbConfig.ssl as boolean | undefined,
-      }
-);
+let pool: Pool;
+
+if (connectionString) {
+  // Use DATABASE_URL (recommended for Vercel)
+  pool = new Pool({
+    connectionString,
+    ssl: isProduction ? { rejectUnauthorized: false } : false,
+    // Vercel serverless function optimizations
+    max: 1, // Limit connections for serverless
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+  });
+} else {
+  // Fallback to individual environment variables
+  pool = new Pool({
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT || '5432'),
+    database: process.env.DB_NAME || 'authflow_db',
+    user: process.env.DB_USER || 'username',
+    password: process.env.DB_PASSWORD || 'password',
+    ssl: isProduction ? { rejectUnauthorized: false } : false,
+    max: 1,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
+  });
+}
 
 // Test database connection
 export const testConnection = async () => {
