@@ -56,8 +56,17 @@ Create a `.env.local` file in the root directory:
 # Neon Database Configuration
 DATABASE_URL=postgresql://username:password@ep-example-123456.us-east-1.aws.neon.tech/neondb?sslmode=require
 
-# JWT Secret (generate a secure random string)
-JWT_SECRET=your_super_secure_jwt_secret_here
+# NextAuth Secret (generate a secure random string)
+NEXTAUTH_SECRET=your_super_secure_random_string_here
+NEXTAUTH_URL=http://localhost:3000
+
+# Google OAuth
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# Facebook OAuth
+FACEBOOK_CLIENT_ID=your_facebook_client_id
+FACEBOOK_CLIENT_SECRET=your_facebook_client_secret
 
 # Environment
 NODE_ENV=development
@@ -74,8 +83,17 @@ DB_NAME=authflow_db
 DB_USER=username
 DB_PASSWORD=password
 
-# JWT Secret
-JWT_SECRET=your_super_secure_jwt_secret_here
+# NextAuth
+NEXTAUTH_SECRET=your_super_secure_random_string_here
+NEXTAUTH_URL=http://localhost:3000
+
+# Google OAuth
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+# Facebook OAuth
+FACEBOOK_CLIENT_ID=your_facebook_client_id
+FACEBOOK_CLIENT_SECRET=your_facebook_client_secret
 
 # Environment
 NODE_ENV=development
