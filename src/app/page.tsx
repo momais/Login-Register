@@ -127,7 +127,7 @@ export default function Home() {
                   href="/login"
                   className="btn-outline text-lg px-8 py-4"
                 >
-                  Sign In
+                  Login In
                 </Link>
               </div>
             </div>
